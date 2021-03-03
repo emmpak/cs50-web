@@ -25,7 +25,18 @@ def entry(request, title):
     })
 
 def search(request):
-  query = request.POST.get('q')
-  return redirect('wiki:entry', title=query)
+  query = request.POST.get('q').lower()
+  entries = [entry.lower() for entry in util.list_entries()]
+  if query in entries: 
+    return redirect('wiki:entry', title=query)
+  else:
+    filtered = [entry for entry in entries if entry.startswith(query)]
+    return render(request, "encyclopedia/search.html", {
+      "entries": filtered
+    })
   # return HttpResponseRedirect(reverse("wiki:entry", kwargs={'titel': query}))
 
+
+
+# [entry.lower() for entry in entries] - map
+# [entry for entry in entries if entry.lower().startswith('cs')] - filter
