@@ -1,10 +1,18 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django import forms
 import markdown2
 
 from . import util
 
+class NewEntryForm(forms.Form):
+  title = forms.CharField(label="Title")
+  markdown = forms.CharField(label="Markdown", widget=forms.Textarea)
+
+def is_part_of_entries(entry):
+  entries = [entry.lower() for entry in util.list_entries()]
+  return entry.lower() in entries
 
 def index(request):
   return render(request, "encyclopedia/index.html", {
@@ -25,9 +33,8 @@ def entry(request, title):
     })
 
 def search(request):
-  query = request.POST.get('q').lower()
-  entries = [entry.lower() for entry in util.list_entries()]
-  if query in entries: 
+  query = request.POST.get('q')
+  if is_part_of_entries(query): 
     return redirect('wiki:entry', title=query)
   else:
     filtered = [entry for entry in entries if entry.startswith(query)]
@@ -35,6 +42,26 @@ def search(request):
       "entries": filtered
     })
   # return HttpResponseRedirect(reverse("wiki:entry", kwargs={'titel': query}))
+
+def add(request):
+  if request.method == 'POST':
+    form = NewEntryForm(request.POST)
+    if form.is_valid():
+      title = form.cleaned_data['title']
+      markdown = form.cleaned_data['markdown']
+      if is_part_of_entries(title):
+        return render(request, "encyclopedia/entry_exists_error.html")
+      util.save_entry(title, markdown)
+      return redirect('wiki:add')
+    else:
+      return render(request, "encyclopedia/add.html", {
+        "form": form
+      })
+  else:
+    return render(request, "encyclopedia/add.html",{
+      "form": NewEntryForm()
+    })
+
 
 
 
