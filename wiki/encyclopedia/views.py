@@ -34,11 +34,12 @@ def entry(request, title):
     })
 
 def search(request):
-  query = request.POST.get('q')
-  if is_part_of_entries(query): 
+  query = request.POST.get('q').lower()
+  entries = [entry.lower() for entry in util.list_entries()]
+  filtered = [entry for entry in entries if entry.startswith(query)]
+  if query in filtered: 
     return redirect('wiki:entry', title=query)
   else:
-    filtered = [entry for entry in entries if entry.startswith(query)]
     return render(request, "encyclopedia/search.html", {
       "entries": filtered
     })
@@ -50,7 +51,7 @@ def add(request):
     if form.is_valid():
       title = form.cleaned_data['title']
       markdown = form.cleaned_data['markdown']
-      if is_part_of_entries(title):
+      if util.get_entry(title):
         return render(request, "encyclopedia/entry_exists_error.html")
       util.save_entry(title, markdown)
       return redirect('wiki:add')
@@ -65,6 +66,9 @@ def add(request):
 
 def random(request):
   return redirect('wiki:entry', title=rdm.choice(util.list_entries()))
+
+def edit(request, title):
+  markdown = util.get_entry(title)
 
 
 
