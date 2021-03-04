@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django import forms
 import markdown2
+import random as rdm
 
 from . import util
 
@@ -61,6 +62,9 @@ def add(request):
     return render(request, "encyclopedia/add.html",{
       "form": NewEntryForm()
     })
+
+def random(request):
+  return redirect('wiki:entry', title=rdm.choice(util.list_entries()))
 
 
 
