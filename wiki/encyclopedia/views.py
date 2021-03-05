@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django import forms
+from random import choice
 import markdown2
-import random as rdm
 
 from . import util
 
 class NewEntryForm(forms.Form):
   title = forms.CharField(label="Title")
+  markdown = forms.CharField(label="Markdown", widget=forms.Textarea)
+
+class EditMarkdownForm(forms.Form):
   markdown = forms.CharField(label="Markdown", widget=forms.Textarea)
 
 def is_part_of_entries(entry):
@@ -26,11 +29,11 @@ def entry(request, title):
     html = markdown2.markdown(markdown)
     return render(request, "encyclopedia/entry.html", {
       "entry": html,
-      "title": title.capitalize()
+      "title": title
   })
   else:
     return render(request, "encyclopedia/error.html",{
-      "title": title.capitalize()
+      "title": title
     })
 
 def search(request):
@@ -65,10 +68,21 @@ def add(request):
     })
 
 def random(request):
-  return redirect('wiki:entry', title=rdm.choice(util.list_entries()))
+  return redirect('wiki:entry', title=choice(util.list_entries()))
 
 def edit(request, title):
-  markdown = util.get_entry(title)
+  if request.method == 'POST':
+    form = EditMarkdownForm(request.POST)
+    if form.is_valid():
+      util.save_entry(title, form.cleaned_data['markdown'])
+      return redirect('wiki:entry', title=title)
+  else:
+    markdown = util.get_entry(title)
+    if(markdown):
+      return render(request, "encyclopedia/edit.html", {
+        "form": EditMarkdownForm(initial={'markdown': markdown}),
+        "title": title
+      })
 
 
 
