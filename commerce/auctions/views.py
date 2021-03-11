@@ -16,7 +16,9 @@ class ListingForm(ModelForm):
 
 
 def index(request):
-  return render(request, "auctions/index.html")
+  return render(request, "auctions/index.html", {
+    "listings": Listing.objects.all()
+  })
 
 def add(request):
   if request.method == "POST":

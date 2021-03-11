@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import decimal
 
 CURRENCIES = [ 
   ('USD', 'USD'), 
@@ -19,6 +20,9 @@ class Listing(models.Model):
   currency = models.CharField(max_length=3, choices=CURRENCIES)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
+
+  def price(self):
+    return decimal.Decimal(self.cents) / 100
 
   def __str__(self):
     return f"{self.title} created in {self.category} category by {self.user} for {self.cents}"

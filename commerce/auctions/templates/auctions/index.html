@@ -2,6 +2,23 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
-    TODO
+    {% for listing in listings %}
+        {% if listing.image_url %}
+        <div>
+          <img src="{{listing.image_url}}" width='500'>
+        </div>
+        {% endif %}
+      <div>
+        <div class='title'>
+          <h3>Listing: {{listing.title}}</h3>
+        </div>
+        <div class='description'>
+          {{listing.description}}
+        </div>
+        <div class='price'>
+          <b>Price:</b> {{listing.price}} {{listing.currency}}
+        </div>
+      </div>
+      <hr>
+    {% endfor %}
 {% endblock %}
