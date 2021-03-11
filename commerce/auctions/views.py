@@ -20,7 +20,13 @@ def index(request):
 
 def add(request):
   if request.method == "POST":
-    return
+    form = ListingForm(request.POST)
+    if form.is_valid():
+      listing = form.save(commit=False)
+      listing.cents = int(form.cleaned_data['cents'] * 100)
+      listing.user = request.user
+      listing.save()
+      return HttpResponseRedirect(reverse('add'))
   else:
     return render(request, "auctions/add_listing.html", {
       "form": ListingForm()
