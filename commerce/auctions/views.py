@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.forms import ModelForm, DecimalField 
+from django.forms import ModelForm, DecimalField
 
 from .models import User, Listing
 
@@ -34,6 +34,10 @@ def add(request):
       "form": ListingForm()
     })
 
+def categories(request):
+  return render(request, "auctions/categories.html", {
+    "categories": Listing.objects.values_list("category", flat=True).distinct().order_by("category")
+  })
 
 def login_view(request):
   if request.method == "POST":
