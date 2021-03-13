@@ -39,6 +39,11 @@ def categories(request):
     "categories": Listing.objects.values_list("category", flat=True).distinct().order_by("category")
   })
 
+def category(request, category):
+  return render(request, "auctions/index.html", {
+    "listings": Listing.objects.filter(category=category)
+  })
+
 def login_view(request):
   if request.method == "POST":
 
