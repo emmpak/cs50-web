@@ -18,6 +18,7 @@ class Listing(models.Model):
   image_url = models.URLField(blank=True)
   cents = models.IntegerField()
   currency = models.CharField(max_length=3, choices=CURRENCIES)
+  followers = models.ManyToManyField(User, blank=True, related_name="watchlist")
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
