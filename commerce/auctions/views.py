@@ -16,7 +16,7 @@ class ListingForm(ModelForm):
 
 
 def index(request):
-  return render(request, "auctions/index.html", {
+  return render(request, "auctions/listings.html", {
     "listings": Listing.objects.all()
   })
 
@@ -40,8 +40,14 @@ def categories(request):
   })
 
 def category(request, category):
-  return render(request, "auctions/index.html", {
+  return render(request, "auctions/listings.html", {
     "listings": Listing.objects.filter(category=category)
+  })
+
+def listing_page(request, listing_id):
+  listing = Listing.objects.get(pk=listing_id)
+  return render(request, "auctions/listing.html", {
+    "listing": listing
   })
 
 def login_view(request):
