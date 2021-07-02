@@ -44,8 +44,8 @@ def category(request, category):
     "listings": Listing.objects.filter(category=category)
   })
 
-def listing_page(request, listing_id):
-  listing = Listing.objects.get(pk=listing_id)
+def listing_page(request, pk):
+  listing = Listing.objects.get(pk=pk)
   return render(request, "auctions/listing.html", {
     "listing": listing
   })

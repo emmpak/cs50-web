@@ -10,7 +10,7 @@
     {% endif %}
     <div>
       <div class='title'>
-        <a href="{% url 'listing_page' listing_id=listing.id %}">
+        <a href="{% url 'listing_page' pk=listing.id %}">
           <h3>Listing: {{listing.title}}</h3>
         </a>
       </div>

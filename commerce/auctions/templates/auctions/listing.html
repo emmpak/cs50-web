@@ -2,6 +2,13 @@
 
 {% block body %}
   <h1>{{listing.title}}</h1>
+  <div>
+    {% if user.is_authenticated %}
+      <a href="{% url 'add_to_watchlist' %}">Add to Watchlist</a>
+    {% else %}
+      Not signed in.
+    {% endif %}
+  </div>
   {% if listing.image_url %}
     <div>
       <img src="{{listing.image_url}}" width='500'>
